@@ -1,5 +1,4 @@
 defmodule Rocketpay.Accounts.Deposit do
-
   alias Rocketpay.Accounts.Operation
   alias Rocketpay.Repo
 
@@ -9,11 +8,13 @@ defmodule Rocketpay.Accounts.Deposit do
     |> run_transaction()
   end
 
-
-  defp run_transaction (multi) do
+  defp run_transaction(multi) do
     case Repo.transaction(multi) do
-      {:error, _operation,reason, _changeset } -> {:error, reason}
-      {:ok, %{account_deposit: account}} -> {:ok, account}
+      {:error, _operation, reason, _changes} ->
+        {:error, reason}
+
+      {:ok, %{deposit: account}} ->
+        {:ok, account}
     end
   end
 end
