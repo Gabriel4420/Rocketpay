@@ -49,7 +49,37 @@ defmodule RocketpayWeb.AccountsControllerTest do
 
       assert response = expected_response
     end
+
+    test "when all params are valid, make the withdraw", %{conn: conn, account_id: account_id} do
+
+      params = %{"value" => "50.00"}
+
+      response =
+        conn
+        |> post(Routes.accounts_path(conn, :withdraw, account_id, params))
+        |> json_response(:ok)
+
+      assert%{
+        "account" => %{
+          "balance" => "50.00",
+          "id" => _id
+        },
+        "message" => "Ballance changed successfully"
+      } = response
+    end
+
+    test "when there are invalid params in withdraw, returns an error", %{conn: conn, account_id: account_id} do
+      params = %{"value" => "banana"}
+
+      response =
+        conn
+        |> post(Routes.accounts_path(conn, :withdraw, account_id, params))
+        |> json_response(:bad_request)
+
+      expected_response = %{"message" => "Invalid deposit value!"}
+
+      assert response = expected_response
+    end
+
   end
-
-
 end
